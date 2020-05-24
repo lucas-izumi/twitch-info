@@ -1,0 +1,43 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+var CLIENT_ID = '';
+var CLIENT_SECRET = '';
+var ACCESS_TOKEN = '';
+
+function GetAccessToken(){
+
+  $.ajax({
+    type: 'POST',
+    url: 'https://id.twitch.tv/oauth2/token?client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET + '&grant_type=client_credentials',
+    success: function(json) {
+      console.log(json);
+      console.log(json.access_token);
+      ACCESS_TOKEN = json.access_token;
+      Start();
+  }});
+}
+
+function GetGame(GameID){
+    var result = [];
+
+    $.ajax({
+      type: 'GET',
+      url: 'https://api.twitch.tv/helix/streams?game_id=' + GameID,
+      headers: {
+        "Client-ID" : CLIENT_ID,
+        "Authorization" : "Bearer " + ACCESS_TOKEN
+      },
+      success: function(json) {
+        result.push(json.streams);
+        console.log(json);
+        console.log(result);
+    }});
+
+    return result;
+}
+
+function Start()
+{
+  GetGame("33214");
+}
+</script>
